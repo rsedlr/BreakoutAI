@@ -8,32 +8,28 @@ boolean saveBest = false;
 boolean runBest = false;
 boolean paused = false;
 
-Level level;
 Player humanPlayer;
 
 
 void setup() {
   size(500, 500); 
   frameRate(fr);
-  //smooth();
+  smooth();
   rectMode(CENTER);
-  colorMode(HSB);
   strokeWeight(0);
-  level = new Level();
   humanPlayer = new Player();
 }
 
 void draw() {
   if (!paused) {
-    background(0, 0, 120);
-    level.draw();
+    background(110);
     if (humanPlaying) {
       if (true) {  // alive
         if (heldKeys[0]) humanPlayer.left(); 
         if (heldKeys[1]) humanPlayer.right();
         if (heldKeys[2]) humanPlayer.fire();
-        //if (mountains.hit(humanShip) || rocks.hitShip(humanShip)) humanShip.kill();
         humanPlayer.ball.move();
+        humanPlayer.collisions();        
         humanPlayer.ball.draw();
         humanPlayer.draw();
       } else {
@@ -78,6 +74,11 @@ boolean lineTouch(float x1, float y1, float x2, float y2, float x3, float y3, fl
   float uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
   float uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
   if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) return true;
+  return false;
+}
+
+boolean circleTouch() {
+ 
   return false;
 }
 
