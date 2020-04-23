@@ -13,7 +13,7 @@ class Player {
   ArrayList<Block> blocks = new ArrayList<Block>(); 
   int row = 8;
   int col = 14;
-  int[] scores = {1, 3, 5 ,7};
+  int[] scores = {7, 5, 3, 1};
   color[] colors = {color(255, 0, 0), color(255, 115, 0), 
                     color(0, 255, 0), color(255, 255, 0)};
 
@@ -32,11 +32,11 @@ class Player {
   
   void makeBlocks() {
     float spacingX = (width)/float(col);
-    float spacingY = (height/2)/row;
+    float spacingY = 30;
     int a = 0;
-    for (float j = spacingY; j < height/2; j += spacingY) {
+    for (float j=1; j <= row; j++) {
       for (float i = spacingX/2; i < width; i += spacingX) {
-        blocks.add(new Block(i, j, colors[a], scores[a]));
+        blocks.add(new Block(i, j*spacingY, colors[a], scores[a]));
       }    
       if (j % 2 == 0) a++;  // if j is even, incriment a
     } 
@@ -51,13 +51,18 @@ class Player {
   void collisions() {
     // collisions with paddle
     if (ball.pos.x < x + w/2 && ball.pos.x > x - w/2) {  // if ball above or below paddle
-      println("above or below " + random(100000));
       if (ball.pos.y + ball.rad > y - h/2 && ball.pos.y < y) {  // if ball hit top of paddle
         ball.vel.y = ball.vel.y * -1;
       }
     } 
     // collisions with blocks
-        
+    for (int i=0; i < blocks.size(); i++) {
+      if (blocks.get(i).hit(ball)) {
+        score += blocks.get(i).points; 
+        println(blocks.get(i).points, score);
+        blocks.remove(i);
+      }
+    }
   }
   
   void fire() {

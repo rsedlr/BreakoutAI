@@ -28,8 +28,8 @@ class Ball {
   }
   
   void fire() {
-    //vel = PVector.fromAngle(random(3.84, 5.58));  // PI+0.7, TWO_PI-0.7
-    vel = PVector.fromAngle(3.84);
+    vel = PVector.fromAngle(random(3.84, 5.58));  // PI+0.7, TWO_PI-0.7
+    //vel = PVector.fromAngle(3.84);
     vel.mult(speed); 
   }
 }
