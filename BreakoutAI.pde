@@ -7,33 +7,40 @@ boolean showBest = false;
 boolean saveBest = false;
 boolean runBest = false;
 boolean paused = false;
+int bestScore;
 
 Player humanPlayer;
-
+HUD hud;
 
 void setup() {
-  size(500, 500); 
+  size(500, 700); 
   frameRate(fr);
   smooth();
   rectMode(CENTER);
   strokeWeight(0);
+  hud = new HUD();
   humanPlayer = new Player();
 }
 
 void draw() {
   if (!paused) {
     background(110);
+    rect(width/2, 500, width, 2);
     if (humanPlaying) {
-      if (true) {  // alive
+      if (humanPlayer.alive) {
         if (heldKeys[0]) humanPlayer.left(); 
         if (heldKeys[1]) humanPlayer.right();
         if (heldKeys[2]) humanPlayer.fire();
-        humanPlayer.ball.move();
+        humanPlayer.move();
         humanPlayer.collisions();        
-        humanPlayer.ball.draw();
         humanPlayer.draw();
+        hud.draw(humanPlayer.score, bestScore);
       } else {
-        //humanShip = new Ship();
+        if (humanPlayer.score > bestScore) bestScore = humanPlayer.score;
+        humanPlayer = new Player();
+        println();
+        println();
+        println();
       }
     }
   } else {

@@ -8,7 +8,7 @@ class Ball {
   PVector vel = new PVector();
   
   Ball() {
-     pos = new PVector(width/2, 460);  // 460
+     pos = new PVector(width/2, 470);  // 460
   }
   
   void draw() {
@@ -16,20 +16,21 @@ class Ball {
     ellipse(pos.x, pos.y, diam, diam); 
   }
   
-  void move() {
+  boolean move() {
     if (pos.x-rad < 0 || pos.x+rad > width) {
        vel.x = -vel.x;
     }
     if (pos.y-rad < 0) {
        vel.y = -vel.y;
     }
-    //if (pos.y+rad > height) vel.y = -vel.y; println("life lost");
+    if (pos.y+rad > 500) return true;  // if gone past paddle, end game
     pos.add(vel); 
+    return false;
   }
   
   void fire() {
-    vel = PVector.fromAngle(random(3.84, 5.58));  // PI+0.7, TWO_PI-0.7
-    //vel = PVector.fromAngle(3.84);
+    vel = PVector.fromAngle(random(4.14, 5.28));  // PI+1, TWO_PI-1
+    //vel = PVector.fromAngle(-PI/4-0.4);  // straight up
     vel.mult(speed); 
   }
 }
