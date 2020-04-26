@@ -19,27 +19,29 @@ class Block {
     rect(x, y, w, h);
   } 
    
-  boolean hit(Ball ball) {
+  boolean hit(Ball ball, int i) {
     float closeX = ball.pos.x;
     float closeY = ball.pos.y;
     int multX = 1; 
     int multY = 1;
     boolean[] ifs = {false, false, false, false};
     if (ball.pos.x < x-w/2) { closeX = x-w/2; multX = -1; ifs[0] = true; }  // check left side 
-    if (ball.pos.x > x+w/2) { closeX = x+w/2; multX = -1; ifs[1] = true; }  // check right side
+    else if (ball.pos.x > x+w/2) { closeX = x+w/2; multX = -1; ifs[1] = true; }  // check right side
     if (ball.pos.y > y+h/2) { closeY = y+h/2; multY = -1; ifs[2] = true; }  // check bottom side
-    if (ball.pos.y < y-h/2) { closeY = y-h/2; multY = -1; ifs[3] = true; }  // check top side
+    else if (ball.pos.y < y-h/2) { closeY = y-h/2; multY = -1; ifs[3] = true; }  // check top side
     fill(0);
     //ellipse(closeX, closeY, 10, 10);
     float dis = sqrt(sq(ball.pos.x-closeX) + sq(ball.pos.y-closeY));
     if (dis == 0) {  // if inside block
-      println("inside fam");
-      if (ball.pos.x - ball.vel.x < x-w/2 || ball.pos.x - ball.vel.x > x+w/2) {
-        ball.pos.x = ball.pos.x - ball.vel.x;
+      println("inside: " + i);
+      float prevX = ball.pos.x - ball.vel.x;
+      float prevY = ball.pos.y - ball.vel.y;
+      if (prevX < x-w/2 || prevX > x+w/2) {
+        ball.pos.x = prevX;
         ball.vel.x = ball.vel.x * -1;
       }
-      if (ball.pos.y - ball.vel.y < y-h/2 || ball.pos.y - ball.vel.y > y+h/2) {
-        ball.pos.y = ball.pos.y - ball.vel.y;
+      if (prevY < y-h/2 || prevY > y+h/2) {
+        ball.pos.y = prevY;
         ball.vel.y = ball.vel.y * -1;
       }
       println("triggered: "  + dis + "  " + multX + "  " + multY + "  Left: " + ifs[0] + "  Right: " + ifs[1] + "  Bottom: " + ifs[2] + "  Top: " + ifs[3]);

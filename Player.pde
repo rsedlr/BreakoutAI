@@ -52,6 +52,9 @@ class Player {
   void drawBlocks() {
     for (int i=0; i < blocks.size(); i++) {
       blocks.get(i).draw(); 
+      textSize(10);
+      fill(0);
+      text(i, blocks.get(i).x-10, blocks.get(i).y+5);
     } 
   }
   
@@ -59,14 +62,14 @@ class Player {
     // collisions with paddle
     if (ball.pos.x < x + w/2 && ball.pos.x > x - w/2) {  // if ball above or below paddle
       if (ball.pos.y + ball.rad > y - h/2 && ball.pos.y < y) {  // if ball hit top of paddle
-        ball.vel.y = ball.vel.y * -1;  // needs to change angle based on where it hit the paddle
+        ball.vel.y = -abs(ball.vel.y);  // needs to change angle based on where it hit the paddle
         ball.vel.rotate((ball.pos.x - x)/50);  // rotate based on how far the ball is from centre of paddle
       }
     } 
     
     // collisions with blocks
     for (int i=0; i < blocks.size(); i++) {
-      if (blocks.get(i).hit(ball)) {
+      if (blocks.get(i).hit(ball, i)) {
         score += blocks.get(i).points; 
         blocks.remove(i);
       }
