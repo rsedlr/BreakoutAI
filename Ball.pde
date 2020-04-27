@@ -30,7 +30,7 @@ class Ball {
   
   void fire() {
     vel = PVector.fromAngle(random(4.14, 5.28));  // PI+1, TWO_PI-1
-    //vel = PVector.fromAngle(-PI/4-0.4);  // straight up
+    //vel = PVector.fromAngle(-PI/4);  // straight up
     vel.mult(speed); 
   }
 }

@@ -22,11 +22,11 @@ class Block {
   boolean hit(Ball ball) {
     boolean a = false;
     if (collides(ball.pos.x + ball.vel.x, ball.pos.y, ball.rad)) {
-      ball.vel.x = -ball.vel.x;
+      ball.vel.x *= -1;
       a = true;
     } 
     if (collides(ball.pos.x, ball.pos.y + ball.vel.y, ball.rad)) {
-      ball.vel.y = -ball.vel.y;
+      ball.vel.y *= -1;
       a = true;
     } 
     return a;

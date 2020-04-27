@@ -35,6 +35,7 @@ void draw() {
         humanPlayer.collisions();        
         humanPlayer.draw();
         hud.draw(humanPlayer.score, bestScore);
+        humanPlayer.look();
       } else {
         if (humanPlayer.score > bestScore) bestScore = humanPlayer.score;
         humanPlayer = new Player();
