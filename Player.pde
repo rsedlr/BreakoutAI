@@ -49,7 +49,7 @@ class Player {
     rect(x, y, w, h);
     drawBlocks();
     ball.draw();
-    drawSensors();
+    //drawSensors();
   }
   
   void drawSensors() {
@@ -79,7 +79,6 @@ class Player {
       }
       if (j % 2 == 0) a++;  // if j is even, incriment a
     }
-    //blocks.add(new Block(400, 400, color(0,0,255), 1));
   }
   
   void drawBlocks() {
@@ -89,13 +88,16 @@ class Player {
   }
   
   void collisions() {
-    // collisions with paddle
-    if (ball.pos.x < x + w/2 && ball.pos.x > x - w/2) {  // if ball above or below paddle
-      if (ball.pos.y + ball.rad > y - h/2 && ball.pos.y < y) {  // if ball hit top of paddle
-        ball.vel.y = -abs(ball.vel.y);  // needs to change angle based on where it hit the paddle
-        ball.vel.rotate((ball.pos.x - x)/50);  // rotate based on how far the ball is from centre of paddle
-      }
-    } 
+    // collisions with paddle                    if x in line with paddle and ball hit top of paddle:
+    if (ball.pos.x < x + w/2 && ball.pos.x > x - w/2  &&  ball.pos.y + ball.rad > y - h/2 && ball.pos.y < y) {
+      ball.vel.y = -abs(ball.vel.y);  // flip the ball's y component of velocity
+      if (!ball.touching) ball.vel.rotate((ball.pos.x - x)/50);  // rotate based on how far the ball is from centre of paddle
+      ball.touching = true;
+    } else {
+      ball.touching = false; 
+    }
+    
+    
     
     // collisions with blocks
     for (int i=0; i < blocks.size(); i++) {
@@ -134,40 +136,45 @@ class Player {
   }
   
   // AI stuffs
+  void think() {
+    decision = brain.output(distances);  // 0.8
+    if (decision[0] > 0.8) left();
+    if (decision[1] > 0.8) right(); 
+  }
+  
   void look() {
     //distances = new float[sensors.length];
     float wid = blocks.get(0).w/2;
     float hei = blocks.get(0).h/2;
-    float[] temp = new float[4];
+    float[] dist = new float[4];
     for (int i=0; i < sensors.length; i++) {
       distances[i] = 999;
       for (int j=0; j < blocks.size(); j++) {
-        temp[0] = lineDistance(x, y, x+sensors[i].x, y+sensors[i].y, blocks.get(j).x+wid, blocks.get(j).y+hei, blocks.get(j).x+wid, blocks.get(j).y-hei);
-        temp[1] = lineDistance(x, y, x+sensors[i].x, y+sensors[i].y, blocks.get(j).x+wid, blocks.get(j).y+hei, blocks.get(j).x-wid, blocks.get(j).y+hei);
-        temp[2] = lineDistance(x, y, x+sensors[i].x, y+sensors[i].y, blocks.get(j).x-wid, blocks.get(j).y-hei, blocks.get(j).x+wid, blocks.get(j).y-hei);
-        temp[3] = lineDistance(x, y, x+sensors[i].x, y+sensors[i].y, blocks.get(j).x-wid, blocks.get(j).y-hei, blocks.get(j).x-wid, blocks.get(j).y+hei);
+        dist[0] = lineDistance(x, y, x+sensors[i].x, y+sensors[i].y, blocks.get(j).x+wid, blocks.get(j).y+hei, blocks.get(j).x+wid, blocks.get(j).y-hei);
+        dist[1] = lineDistance(x, y, x+sensors[i].x, y+sensors[i].y, blocks.get(j).x+wid, blocks.get(j).y+hei, blocks.get(j).x-wid, blocks.get(j).y+hei);
+        dist[2] = lineDistance(x, y, x+sensors[i].x, y+sensors[i].y, blocks.get(j).x-wid, blocks.get(j).y-hei, blocks.get(j).x+wid, blocks.get(j).y-hei);
+        dist[3] = lineDistance(x, y, x+sensors[i].x, y+sensors[i].y, blocks.get(j).x-wid, blocks.get(j).y-hei, blocks.get(j).x-wid, blocks.get(j).y+hei);
         //line(blocks.get(j).x+wid, blocks.get(j).y+hei, blocks.get(j).x+wid, blocks.get(j).y-hei);
         //line(blocks.get(j).x+wid, blocks.get(j).y+hei, blocks.get(j).x-wid, blocks.get(j).y+hei);
         //line(blocks.get(j).x-wid, blocks.get(j).y-hei, blocks.get(j).x+wid, blocks.get(j).y-hei);
         //line(blocks.get(j).x-wid, blocks.get(j).y-hei, blocks.get(j).x-wid, blocks.get(j).y+hei);
-        for (int a=0; a < temp.length; a++) {
-          if (temp[a] < distances[i] && temp[a] != 0) distances[i] = temp[a];
+        for (int a=0; a < dist.length; a++) {
+          if (dist[a] < distances[i] && dist[a] != 0) distances[i] = dist[a];
         }
       }
     }
-    
-    println("********************");
-    println(distances);
+    //println("********************");
+    //println(distances);
   }
   
   float lineDistance(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
     float uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
     float uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
     if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
-      float intersectionX = x1 + (uA * (x2-x1));
-      float intersectionY = y1 + (uA * (y2-y1));
-      fill(0);
-      ellipse(intersectionX, intersectionY, 7, 7);
+      //float intersectionX = x1 + (uA * (x2-x1));
+      //float intersectionY = y1 + (uA * (y2-y1));
+      //fill(0);
+      //ellipse(intersectionX, intersectionY, 7, 7);
       return sqrt(sq((uA * (x2-x1))) + sq((uA * (y2-y1))));  // return distance
     }
     return 0;

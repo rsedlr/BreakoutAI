@@ -32,16 +32,16 @@ class Block {
     return a;
   }
   
-  boolean collides(float curX, float curY, float rad) {
-    float closeX = curX;
-    float closeY = curY;
+  boolean collides(float ballX, float ballY, float rad) {
+    float closeX = ballX;
+    float closeY = ballY;
     
-    if (curX < x-w/2) closeX = x-w/2;   // check left side 
-    else if (curX > x+w/2) closeX = x+w/2;  // check right side
-    if (curY > y+h/2) closeY = y+h/2;  // check bottom side
-    else if (curY < y-h/2) closeY = y-h/2;  // check top side
+    if (ballX < x-w/2) closeX = x-w/2;   // check left side 
+    else if (ballX > x+w/2) closeX = x+w/2;  // check right side
+    if (ballY > y+h/2) closeY = y+h/2;  // check bottom side
+    else if (ballY < y-h/2) closeY = y-h/2;  // check top side
     
-    float dis = sqrt(sq(curX-closeX) + sq(curY-closeY));
+    float dis = sqrt(sq(ballX-closeX) + sq(ballY-closeY));
     if (dis < rad) return true;  // if inside block
     return false;
   }

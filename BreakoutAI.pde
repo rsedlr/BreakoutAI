@@ -8,6 +8,8 @@ boolean saveBest = false;
 boolean runBest = false;
 boolean paused = false;
 int bestScore;
+float bestFitness = 0;
+int alive;
 
 Player humanPlayer;
 HUD hud;
@@ -35,7 +37,7 @@ void draw() {
         humanPlayer.collisions();        
         humanPlayer.draw();
         hud.draw(humanPlayer.score, bestScore);
-        humanPlayer.look();
+        //humanPlayer.look();
       } else {
         if (humanPlayer.score > bestScore) bestScore = humanPlayer.score;
         humanPlayer = new Player();
@@ -43,6 +45,8 @@ void draw() {
         println();
         println();
       }
+    } else {
+      // AI training mode
     }
   } else {
     rect(width/2, 5, width, 5); 

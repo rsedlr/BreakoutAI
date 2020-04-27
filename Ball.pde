@@ -6,6 +6,7 @@ class Ball {
   color col = color(255);
   PVector pos;
   PVector vel = new PVector();
+  boolean touching = false;
   
   Ball() {
      pos = new PVector(width/2, 470);  // 460
