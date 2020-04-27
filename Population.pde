@@ -126,4 +126,5 @@ class Population {
       players[i].calculateFitness(); 
     }
   }
+  
 } 

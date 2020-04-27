@@ -179,6 +179,41 @@ class Player {
     }
     return 0;
   }
+  
+  void calculateFitness() {
+    fitness = score;  // incorperate time into this soon
+  }
+  
+  void mutate(boolean force) {
+    if (force) {
+      brain.mutate(1);
+    } else {
+      brain.mutate(globalMutationRate);
+    }
+  }
+  
+  Player clone() {
+     Player clone = new Player(); 
+     clone.brain = brain.clone();
+     return clone;
+  }
+  
+  Player crossover(Player parent2) {
+    Player child = new Player();
+    child.brain = brain.crossover(parent2.brain);
+    return child;
+  } 
+  
+  void saveCar(int carNo, int gen) {  //save the players top score and its population id 
+    saveTable(brain.NetToTable(), "data/car" + carNo + "-gen"+ gen + "-fit" + bestFitness + "^2.csv");  // normal fitness wasnt working
+  }
+  
+  Player loadCar(int playerNo) {
+    Player load = new Player();
+    Table t = loadTable("data/player" + playerNo + ".csv");
+    load.brain.TableToNet(t);
+    return load;
+  }
 }
 
 // points: yellow=1, green=3, orange=5, red=7
