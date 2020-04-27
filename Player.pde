@@ -69,7 +69,7 @@ class Player {
     
     // collisions with blocks
     for (int i=0; i < blocks.size(); i++) {
-      if (blocks.get(i).hit(ball, i)) {
+      if (blocks.get(i).hit(ball)) {
         score += blocks.get(i).points; 
         blocks.remove(i);
       }

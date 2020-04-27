@@ -2,7 +2,7 @@
 class Ball {
   float diam = 10;
   float rad = diam/2;
-  float speed = 3;  // 5
+  float speed = 4;  // 5
   color col = color(255);
   PVector pos;
   PVector vel = new PVector();
