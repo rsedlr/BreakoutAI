@@ -16,10 +16,12 @@ class Population {
     for (int i=0; i < players.length; i++) {
       if (players[i].alive) {
         players[i].look();
-        //players[i].think();
+        players[i].think();
         players[i].move();
+        players[i].collisions();
         if (!showBest || i == 0) players[i].draw();  // draw players
       }
+      if (i == 0) players[i].drawBlocks();
     }
   }
   
@@ -64,7 +66,7 @@ class Population {
     return true;
   }
   
-  void naturalSelevtion() {
+  void naturalSelection() {
     Player[] newPlayers = new Player[players.length];
     setBest();
     newPlayers[0] = players[bestPlayerNo[0]].clone();  // top 3 survive to next
@@ -77,20 +79,12 @@ class Population {
     newPlayers[3].mutate(true);
     newPlayers[4].mutate(true);
     newPlayers[5].mutate(true);
-    //newCars[3] = cars[bestCarNo[0]].crossover(cars[bestCarNo[1]]);  // they also get crossed
-    //newCars[4] = cars[bestCarNo[0]].crossover(cars[bestCarNo[2]]);
-    //newCars[5] = cars[bestCarNo[1]].crossover(cars[bestCarNo[2]]);
-    
-    //newCars[6] = cars[bestCarNo[0]].crossover(cars[bestCarNo[1]]);  // and crossed + mutated
-    //newCars[7] = cars[bestCarNo[0]].crossover(cars[bestCarNo[1]]);
-    //newCars[8] = cars[bestCarNo[0]].crossover(cars[bestCarNo[1]]);
-
     
     for (int i=6; i < players.length; i++) {
       if (i < players.length/3) {  // length/2
-        newPlayers[i] = newPlayers().clone();
+        newPlayers[i] = selectPlayer().clone();
       } else {
-        newPlayers[i] = selectCar().crossover(selectCar());
+        newPlayers[i] = selectPlayer().crossover(selectPlayer());
       }
       newPlayers[i].mutate(false);
     }
@@ -124,6 +118,7 @@ class Population {
   void calculateFitness() {
     for (int i=0; i < players.length; i++) {
       players[i].calculateFitness(); 
+      if (players[i].score > bestScore) bestScore = players[i].score;
     }
   }
   

@@ -2,7 +2,7 @@
 class Ball {
   float diam = 10;
   float rad = diam/2;
-  float speed = 4;  // 5
+  //float speed = 5;  // 4 for human, 5 for AI
   color col = color(255);
   PVector pos;
   PVector vel = new PVector();
@@ -30,8 +30,11 @@ class Ball {
   }
   
   void fire() {
-    vel = PVector.fromAngle(random(4.14, 5.28));  // PI+1, TWO_PI-1
-    //vel = PVector.fromAngle(-PI/4);  // straight up
-    vel.mult(speed); 
+    float angle;
+    if (humanPlaying) angle = random(3.94, 5.48);  // PI+0.8, TWO_PI-0.8
+    else angle = -1.57-0.2;
+    vel = PVector.fromAngle(angle);  
+    vel = PVector.fromAngle(-1.57+1.15);  // straight up
+    vel.mult(ballSpeed); 
   }
 }

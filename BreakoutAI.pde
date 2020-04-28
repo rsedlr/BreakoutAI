@@ -2,26 +2,34 @@
 boolean[] heldKeys = {false, false, false};  // left, right, fire
 int fr = 60;
 float globalMutationRate = 0.15;  // 0.1
-boolean humanPlaying = true;
-boolean showBest = true;
+boolean humanPlaying = false;
+boolean showBest = false;
 boolean saveBest = false;
 boolean runBest = false;
 boolean paused = false;
 int bestScore;
 float bestFitness = 0;
+float ballSpeed;
 int alive;
 
 Player humanPlayer;
+Population pop;
 HUD hud;
 
 void setup() {
   size(500, 700); 
   frameRate(fr);
-  smooth();
+  //smooth();
   rectMode(CENTER);
   strokeWeight(0);
   hud = new HUD();
-  humanPlayer = new Player();
+  if (humanPlaying) {
+    ballSpeed = 4.5;
+    humanPlayer = new Player(); 
+  } else {
+    ballSpeed = 4.5;  // 5
+    pop = new Population(200); 
+  }
 }
 
 void draw() {
@@ -42,11 +50,17 @@ void draw() {
         if (humanPlayer.score > bestScore) bestScore = humanPlayer.score;
         humanPlayer = new Player();
         println();
-        println();
-        println();
       }
-    } else {
-      // AI training mode
+    } else if (runBest) {  
+
+    } else {  // if just evolving normally
+      if (!pop.done()) {  //if any players are alive then update them
+        hud.draw("Gen: "+str(pop.gen), "Alive: "+str(alive), "Best score: "+str(bestScore), "Prev Fitness: "+str(bestFitness));
+        pop.updateAlive();
+      } else {  //all dead, do genetic algorithm shit
+        pop.calculateFitness(); 
+        pop.naturalSelection();
+      }
     }
   } else {
     rect(width/2, 5, width, 5); 
@@ -71,7 +85,7 @@ void keyPressed() {
     if (keyCode == RIGHT) heldKeys[1] = true;
     if (keyCode == UP) heldKeys[2] = true;
   }
-  //if (!humanPlaying) println("frameRate: "+fr, " showBest: "+showBest, " MR: "+globalMutationRate);
+  if (!humanPlaying) println("frameRate: "+fr, " showBest: "+showBest, " MR: "+globalMutationRate);
 }
 
 void keyReleased() {
@@ -86,11 +100,6 @@ boolean lineTouch(float x1, float y1, float x2, float y2, float x3, float y3, fl
   float uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
   float uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1));
   if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) return true;
-  return false;
-}
-
-boolean circleTouch() {
- 
   return false;
 }
 

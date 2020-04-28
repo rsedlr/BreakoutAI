@@ -17,9 +17,9 @@ class HUD {
   public void draw(String str1, String str2, String str3, String str4) {  // draw method for AI
     fill(0); 
     textSize(32);
-    text(str1, x0, 550);
-    text(str2, x1, 550);
-    text(str3, x2, 600);
-    text(str4, x3, 600);
+    text(str1, 15, 550);
+    text(str2, 250, 550);
+    text(str3, 15, 600);
+    text(str4, 15, 650);
   }
 }

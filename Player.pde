@@ -8,13 +8,13 @@ class Player {
   color c = color(255);
   boolean canFire = true;
   boolean alive = true;
-  Ball ball;
   ArrayList<Block> blocks = new ArrayList<Block>(); 
   int row = 8;
   int col = 14;
   int[] scores = {7, 5, 3, 1};
   color[] colors = {color(255, 0, 0), color(255, 115, 0), 
                     color(0, 255, 0), color(255, 255, 0)};
+  Ball ball;
   
   // AI stuff
   PVector[] sensors = {new PVector(15, -465), 
@@ -34,20 +34,24 @@ class Player {
   boolean replay = false;  // whether the player is being replayed                
   float[] distances = new float[sensors.length] ;  // distances from car sensors
   float[] decision = new float[2]; // the output of the NN
-
+  int brainInputNodes = distances.length + 6;
 
   Player() {
     x = width/2;
     y = 480;
     ball = new Ball();
     makeBlocks();
-    //brain = new NeuralNet(sensors.length + 4, 16, 2);  // sensors + ball pos & vel
+    if (!humanPlaying) {
+      brain = new NeuralNet(brainInputNodes, 16, 2);  // sensors + ball pos & vel
+      fire();
+    }
   }
    
   void draw() {
     fill(c);
     rect(x, y, w, h);
-    drawBlocks();
+    if (humanPlaying) drawBlocks();
+    //drawBlocks();
     ball.draw();
     //drawSensors();
   }
@@ -91,13 +95,23 @@ class Player {
     // collisions with paddle                    if x in line with paddle and ball hit top of paddle:
     if (ball.pos.x < x + w/2 && ball.pos.x > x - w/2  &&  ball.pos.y + ball.rad > y - h/2 && ball.pos.y < y) {
       ball.vel.y = -abs(ball.vel.y);  // flip the ball's y component of velocity
-      if (!ball.touching) ball.vel.rotate((ball.pos.x - x)/50);  // rotate based on how far the ball is from centre of paddle
+      if (!ball.touching) {
+        ball.vel.rotate((ball.pos.x - x)/50);  // rotate based on how far the ball is from centre of paddle
+        //println(ball.vel.heading());
+        if (ball.vel.heading() > -0.42) {
+          ball.vel = PVector.fromAngle(-0.42);
+          ball.vel.mult(ballSpeed); 
+          println("*** reduced ball angle to -0.75");
+        } else if (ball.vel.heading() < -2.72) {
+          ball.vel = PVector.fromAngle(-2.72);
+          ball.vel.mult(ballSpeed);
+          println("*** reduced ball angle to -2.72");
+        }
+      }
       ball.touching = true;
     } else {
       ball.touching = false; 
     }
-    
-    
     
     // collisions with blocks
     for (int i=0; i < blocks.size(); i++) {
@@ -137,13 +151,22 @@ class Player {
   
   // AI stuffs
   void think() {
-    decision = brain.output(distances);  // 0.8
+    float[] inputArr = new float[brainInputNodes];
+    inputArr[0] = x;
+    inputArr[1] = y;
+    inputArr[2] = ball.pos.x;
+    inputArr[3] = ball.pos.y;
+    inputArr[4] = ball.vel.x;
+    inputArr[5] = ball.vel.y;
+    for (int i=0; i < distances.length; i++) {
+      inputArr[i+6] = distances[i];
+    }
+    decision = brain.output(inputArr);
     if (decision[0] > 0.8) left();
     if (decision[1] > 0.8) right(); 
   }
   
   void look() {
-    //distances = new float[sensors.length];
     float wid = blocks.get(0).w/2;
     float hei = blocks.get(0).h/2;
     float[] dist = new float[4];
@@ -173,7 +196,6 @@ class Player {
     if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
       //float intersectionX = x1 + (uA * (x2-x1));
       //float intersectionY = y1 + (uA * (y2-y1));
-      //fill(0);
       //ellipse(intersectionX, intersectionY, 7, 7);
       return sqrt(sq((uA * (x2-x1))) + sq((uA * (y2-y1))));  // return distance
     }
@@ -182,6 +204,7 @@ class Player {
   
   void calculateFitness() {
     fitness = score;  // incorperate time into this soon
+    //if (blocks.size() == 0) fitness += time;
   }
   
   void mutate(boolean force) {
