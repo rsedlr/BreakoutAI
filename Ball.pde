@@ -34,7 +34,7 @@ class Ball {
     if (humanPlaying) angle = random(3.94, 5.48);  // PI+0.8, TWO_PI-0.8
     else angle = -1.57-0.2;
     vel = PVector.fromAngle(angle);  
-    vel = PVector.fromAngle(-1.57+1.15);  // straight up
+    //vel = PVector.fromAngle(-1.57+1.15);  // straight up
     vel.mult(ballSpeed); 
   }
 }
