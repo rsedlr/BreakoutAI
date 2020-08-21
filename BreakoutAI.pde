@@ -1,8 +1,9 @@
+// TODO: add lives. 
 
 boolean[] heldKeys = {false, false, false};  // left, right, fire
 int fr = 60;
 float globalMutationRate = 0.15;  // 0.1
-boolean humanPlaying = false;
+boolean humanPlaying = true;
 boolean showBest = false;
 boolean saveBest = false;
 boolean runBest = false;
